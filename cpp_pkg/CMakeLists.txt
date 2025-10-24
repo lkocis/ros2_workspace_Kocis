@@ -8,6 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(my_interfaces REQUIRED)
 
 install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
@@ -17,8 +18,13 @@ install(TARGETS
 add_executable(my_first_node_cpp src/my_first_node_cpp.cpp)
 ament_target_dependencies(my_first_node_cpp rclcpp)
 
+#program
+add_executable(complex_pub_cpp src/complex_publisher.cpp)
+ament_target_dependencies(complex_pub_cpp rclcpp my_interfaces)
+
 install(TARGETS
   my_first_node_cpp
+  complex_pub_cpp
   DESTINATION lib/${PROJECT_NAME}
 )
 

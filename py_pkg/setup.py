@@ -23,7 +23,14 @@ setup(
         ],
     },
     entry_points={
-        'console_scripts': ["my_first_node_py = py_pkg.my_first_node_py:main"
+        'console_scripts': ["my_first_node_py = py_pkg.my_first_node_py:main",
+                            "complex_pub = py_pkg.complex_publisher:main",
+                            "complex_sub = py_pkg.complex_subscriber:main",
+                            "countwords_srv = py_pkg.countwords_service:main",
+                            "countwords_cli = py_pkg.countwords_client:main",
+                            "countuntil_act = py_pkg.countuntil_action:main",
+                            "countuntil_cli = py_pkg.countuntil_client:main",
+                            "draw_house = py_pkg.draw_house:main"
         ],
     },
 )
