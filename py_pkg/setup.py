@@ -30,7 +30,8 @@ setup(
                             "countwords_cli = py_pkg.countwords_client:main",
                             "countuntil_act = py_pkg.countuntil_action:main",
                             "countuntil_cli = py_pkg.countuntil_client:main",
-                            "draw_house = py_pkg.draw_house:main"
+                            "draw_house = py_pkg.draw_house:main",
+                            "draw_lana = py_pkg.draw_lana:main"
         ],
     },
 )

@@ -8,7 +8,7 @@ class DrawHouse(Node):
     def __init__(self): 
         super().__init__('draw_house') 
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10) 
-        time.sleep(1) # Start drawing a simple house shape 
+        time.sleep(1) 
         self.draw_line(2) 
         self.turn(math.radians(135)) 
         self.draw_line(2.8284271247) 
@@ -24,7 +24,6 @@ class DrawHouse(Node):
         self.draw_line(2.7) 
         self.turn(math.radians(-128)) 
         self.draw_line(2) 
-        self.get_logger().info('House drawing completed!') 
 
     def draw_line(self, distance, speed=1.0):
         msg = Twist()
