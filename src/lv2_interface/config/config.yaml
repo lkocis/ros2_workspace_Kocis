@@ -1,0 +1,4 @@
+znamenitosti_pub_sub:
+  ros__parameters:
+    periodic_enabled: 1 # GUI input: 0, periodic: 1
+    period: 1.0

@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+import os
+import glob
 
 package_name = 'py_pkg'
 
@@ -10,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'config'), glob.glob('config/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -32,7 +35,7 @@ setup(
                             "countuntil_cli = py_pkg.countuntil_client:main",
                             "draw_house = py_pkg.draw_house:main",
                             "draw_lana = py_pkg.draw_lana:main",
-                            "znamenitosti_pub_sub = py_pkg.znamenitosti_pub_sub:main",
+                            "znamenitosti_pub_sub = py_pkg.znamenitosti_pub_sub:main"
         ],
     },
 )
