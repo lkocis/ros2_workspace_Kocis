@@ -17,7 +17,7 @@ class ZnamenitostiNode(Node):
         # Publisher
         self.pub = self.create_publisher(Znamenitost, '/znamenitosti', 10)
 
-        self.declare_parameter('periodic_enabled', 1)  # 0 = user input, 1 = periodic
+        self.declare_parameter('periodic_enabled', 0)  # 0 = user input, 1 = periodic
         self.declare_parameter('period', 1.0)  
 
         self.counter = 1
