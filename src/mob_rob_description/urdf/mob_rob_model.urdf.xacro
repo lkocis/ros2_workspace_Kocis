@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="find mob_rob_description/urdf/mob_rob_macros.urdf.xacro"/>
+    <xacro:property name="drive_wheel_length" value="0.05"/>
+    <xacro:property name="drive_wheel_radius" value="0.1"/>
+
+    <xacro:wheel_link prefix="left" length="drive_wheel_length" radius="0.05"/>
+    <xacro:wheel_link prefix="right" length="drive_wheel_length" radius="0.1"/>
+
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.4 0.3 0.3"/>
+            </geometry>
+            <material name="red">
+                <color rgba="1.0 0 0 1"/>
+            </material>
+        </visual>
+
+        <collision>
+            <geometry>
+                <box size="0.4 0.3 0.3"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.015" iyy="0.0208" izz="0.0208" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <link name="back_caster">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+            <material name="silver">
+                <color rgba="0.75 0.75 0.75 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00077" iyy="0.00077" izz="0.0000417" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="back_caster_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="back_caster"/>
+        <origin rpy="0 0 0" xyz="-0.2 0 0"/>
+    </joint>
+
+    <link name="back_wheel">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.035"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.035"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="back_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="back_caster"/>
+        <child link="back_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0 0 -.15"/>
+    </joint>
+
+    <link name="left_wheel"> <!-- link name="right_wheel" -->
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        <material name="black" /> <!-- Koristimo prethodno definiranu boju -->
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00027" iyy="0.00027" izz="0.0005" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0.0525 0.175 -.085"/>
+    </joint>
+
+    <link name="right_wheel"> 
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        <material name="black" /> 
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00027" iyy="0.00027" izz="0.0005" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0.0525 -0.175 -.085"/>
+    </joint>
+
+    <joint name="kinect_joint" type="fixed">
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="kinect_link"/>
+        <origin rpy="0 0 0" xyz="0.1685 0 0.169"/>
+    </joint>
+
+    <joint name="kinect_rgb_joint" type="fixed">
+        <origin xyz="0.0318 -0.0125 0.0" rpy="0 0 0"/>
+        <parent link="kinect_link"/>
+        <child link="kinect_rgb_frame" />
+    </joint>
+
+    <link name="kinect_rgb_frame"/>
+
+    <joint name="kinect_rgb_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+        <parent link="kinect_rgb_frame" />
+        <child link="kinect_rgb_optical_frame" />
+    </joint>
+
+    <link name="kinect_rgb_optical_frame"/>
+        <joint name="kinect_depth_joint" type="fixed">
+        <origin xyz="0 0.0250 0" rpy="0 0 0" />
+        <parent link="kinect_rgb_frame" />
+        <child link="kinect_depth_frame" />
+    </joint>
+
+    <link name="kinect_depth_frame"/>
+
+    <joint name="kinect_depth_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+        <parent link="kinect_depth_frame" />
+        <child link="kinect_depth_optical_frame" />
+    </joint>
+
+    <link name="kinect_depth_optical_frame"/>
+
+    <link name="base_footprint"/>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin rpy="0 0 0" xyz="0 0 0.185"/>
+    </joint>
+</robot>

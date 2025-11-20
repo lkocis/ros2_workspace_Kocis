@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <gazebo reference="base_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="back_caster">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="back_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="kinect_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+    
+    <gazebo>
+        <plugin name="gz::sim::systems::DiffDrive" filename = "gz-sim-diff-drive-system">
+        <odom_publish_frequency>30</odom_publish_frequency>
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+        <wheel_separation>0.32</wheel_separation>
+        <wheel_radius>0.1</wheel_radius>
+        <max_wheel_torque>20</max_wheel_torque>
+        <max_wheel_acceleration>1.0</max_wheel_acceleration>
+        <odom_topic>odom</odom_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
+        <topic>cmd_vel</topic>
+        <tf_topic>tf</tf_topic>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gz::sim::systems::JointStatePublisher" filename= "gz-sim-joint-state-publisher-system">
+        <topic>joint_state</topic>
+        <joint_name>back_caster_joint</joint_name>
+        <joint_name>back_wheel_joint</joint_name>
+        <joint_name>right_wheel_joint</joint_name>
+        <joint_name>left_wheel_joint</joint_name>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="kinect_link">
+        <sensor name="rgbd_camera" type="rgbd_camera">
+            <update_rate>15</update_rate>
+            <camera>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
+                <horizontal_fov>1.05</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>8.0</far>
+                </clip>
+            </camera>
+            <topic>camera</topic>
+            <gz_frame_id>kinect_depth_optical_frame</gz_frame_id>
+        </sensor>
+    </gazebo>
+</robot>

@@ -1,0 +1,256 @@
+<?xml version="1.0"?>
+
+<robot name="mob_rob">
+
+    <link name="base_link">
+        <visual>
+        <geometry>
+            <box size="0.4 0.3 0.3"/>
+        </geometry>
+        <material name="red">
+            <color rgba="1.0 0 0 1"/>
+        </material>
+        </visual>
+
+        <collision>
+        <geometry>
+            <box size="0.4 0.3 0.3"/>
+        </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="1.0"/>
+            <inertia ixx="0.015" iyy="0.0208" izz="0.0208" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <link name="back_caster">
+        <visual>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+            <material name="silver">
+                <color rgba="0.75 0.75 0.75 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="0.05 0.05 0.3"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00077" iyy="0.00077" izz="0.0000417" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="back_caster_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="back_caster"/>
+        <origin rpy="0 0 0" xyz="-0.2 0 0"/>
+    </joint>
+
+    <link name="back_wheel">
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.035"/>
+            </geometry>
+            <material name="black">
+                <color rgba="0 0 0 1"/>
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.035"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="5.1458e-5" iyy="5.1458e-5" izz="6.125e-5" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="back_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="back_caster"/>
+        <child link="back_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0 0 -.15"/>
+    </joint>
+
+    <link name="left_wheel"> <!-- link name="right_wheel" -->
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        <material name="black" /> <!-- Koristimo prethodno definiranu boju -->
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00027" iyy="0.00027" izz="0.0005" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="left_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0.0525 0.175 -.085"/>
+    </joint>
+
+    <link name="right_wheel"> 
+        <visual>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        <material name="black" /> 
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder length="0.05" radius="0.1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.1"/>
+            <inertia ixx="0.00027" iyy="0.00027" izz="0.0005" ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+    </link>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <axis xyz="0 0 1"/>
+        <parent link="base_link"/>
+        <child link="right_wheel"/>
+        <origin rpy="-1.5708 0 0" xyz="0.0525 -0.175 -.085"/>
+    </joint>
+
+    <joint name="kinect_joint" type="fixed">
+        <axis xyz="0 1 0"/>
+        <parent link="base_link"/>
+        <child link="kinect_link"/>
+        <origin rpy="0 0 0" xyz="0.1685 0 0.169"/>
+    </joint>
+
+    <joint name="kinect_rgb_joint" type="fixed">
+        <origin xyz="0.0318 -0.0125 0.0" rpy="0 0 0"/>
+        <parent link="kinect_link"/>
+        <child link="kinect_rgb_frame" />
+    </joint>
+
+    <link name="kinect_rgb_frame"/>
+
+    <joint name="kinect_rgb_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+        <parent link="kinect_rgb_frame" />
+        <child link="kinect_rgb_optical_frame" />
+    </joint>
+
+    <link name="kinect_rgb_optical_frame"/>
+        <joint name="kinect_depth_joint" type="fixed">
+        <origin xyz="0 0.0250 0" rpy="0 0 0" />
+        <parent link="kinect_rgb_frame" />
+        <child link="kinect_depth_frame" />
+    </joint>
+
+    <link name="kinect_depth_frame"/>
+
+    <joint name="kinect_depth_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="-1.57 0 -1.57" />
+        <parent link="kinect_depth_frame" />
+        <child link="kinect_depth_optical_frame" />
+    </joint>
+
+    <link name="kinect_depth_optical_frame"/>
+
+    <link name="base_footprint"/>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <origin rpy="0 0 0" xyz="0 0 0.185"/>
+    </joint>
+
+    <gazebo reference="base_link">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <gazebo reference="back_caster">
+        <material>Gazebo/DarkGrey</material>
+    </gazebo>
+
+    <gazebo reference="back_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="kinect_link">
+        <material>Gazebo/Black</material>
+    </gazebo>
+    
+    <gazebo>
+        <plugin name="gz::sim::systems::DiffDrive" filename = "gz-sim-diff-drive-system">
+        <odom_publish_frequency>30</odom_publish_frequency>
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+        <wheel_separation>0.32</wheel_separation>
+        <wheel_radius>0.1</wheel_radius>
+        <max_wheel_torque>20</max_wheel_torque>
+        <max_wheel_acceleration>1.0</max_wheel_acceleration>
+        <odom_topic>odom</odom_topic>
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_link</child_frame_id>
+        <topic>cmd_vel</topic>
+        <tf_topic>tf</tf_topic>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gz::sim::systems::JointStatePublisher" filename= "gz-sim-joint-state-publisher-system">
+        <topic>joint_state</topic>
+        <joint_name>back_caster_joint</joint_name>
+        <joint_name>back_wheel_joint</joint_name>
+        <joint_name>right_wheel_joint</joint_name>
+        <joint_name>left_wheel_joint</joint_name>
+        </plugin>
+    </gazebo>
+
+    <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="kinect_link">
+        <sensor name="rgbd_camera" type="rgbd_camera">
+            <update_rate>15</update_rate>
+            <camera>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
+                <horizontal_fov>1.05</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>8.0</far>
+                </clip>
+            </camera>
+            <topic>camera</topic>
+            <gz_frame_id>kinect_depth_optical_frame</gz_frame_id>
+        </sensor>
+    </gazebo>
+
+</robot>
+
+<!-- za pokretanje: ros2 launch urdf_tutorial display.launch.py model:=/home/student/ros2_workspace_Kocis/src/mob_rob_description/urdf/mob_rob.urdf-->
