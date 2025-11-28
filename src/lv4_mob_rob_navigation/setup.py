@@ -27,7 +27,8 @@ setup(
     entry_points={
         'console_scripts': [
             "navigator = lv4_mob_rob_navigation.navigator:main",
-            "obstacle_detector = lv4_mob_rob_navigation.obstacle_detector:main"
+            "obstacle_detector = lv4_mob_rob_navigation.obstacle_detector:main",
+            "keyboard_navigation = lv4_mob_rob_navigation.keyboard_navigation:main",
         ],
     },
 )

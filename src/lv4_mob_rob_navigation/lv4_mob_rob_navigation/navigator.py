@@ -23,16 +23,16 @@ class Navigator(Node):
         self.current_y = 0.0
         self.current_theta = 0.0
         self.create_subscription(
-            Odometry,           # PRAVI tip za odometriju
-            '/odom_fake',       # tema na kojoj Gazebo objavljuje poziciju
-            self.odom_callback, # tvoja callback funkcija
-            10  
+            Odometry,
+            '/odom_fake',
+            self.odom_callback,
+            10
         )
 
         self._action_server = ActionServer(
             self,
             NavigateToPose,
-            'navigate_to_pose',
+            '/navigate_to_pose',
             self.execute_callback
         )
 
@@ -40,10 +40,9 @@ class Navigator(Node):
         self.collision_detected = msg.data
 
     def odom_callback(self, msg):
-        self.x = msg.pose.pose.position.x
-        self.y = msg.pose.pose.position.y
+        self.current_x = msg.pose.pose.position.x
+        self.current_y = msg.pose.pose.position.y
 
-        # Pretvaranje quaternion u Euler za yaw (theta)
         orientation_q = msg.pose.pose.orientation
         _, _, yaw = tf_transformations.euler_from_quaternion([
             orientation_q.x,
@@ -51,7 +50,7 @@ class Navigator(Node):
             orientation_q.z,
             orientation_q.w
         ])
-        self.theta = yaw
+        self.current_theta = yaw
 
     def execute_callback(self, goal_handle):
         goal = goal_handle.request
@@ -61,7 +60,7 @@ class Navigator(Node):
 
         self.get_logger().info(f'Navigating to ({target_x:.2f}, {target_y:.2f}, {target_theta:.2f})')
 
-        # --- Korak 1: rotacija prema cilju ---
+        # Rotacija prema cilju
         angle_to_goal = math.atan2(target_y - self.current_y, target_x - self.current_x)
         while abs(angle_to_goal - self.current_theta) > 0.05:
             twist = Twist()
@@ -70,7 +69,7 @@ class Navigator(Node):
             rclpy.spin_once(self, timeout_sec=0.1)
         self.stop_robot()
 
-        # --- Korak 2: pravocrtno kretanje ---
+        #Pravocrtno kretanje 
         distance = math.hypot(target_x - self.current_x, target_y - self.current_y)
         while distance > 0.05:
             if self.collision_detected:
@@ -88,7 +87,7 @@ class Navigator(Node):
 
         self.stop_robot()
 
-        # --- Korak 3: rotacija na ciljanu orijentaciju ---
+        # Rotacija na ciljanu orijentaciju
         while abs(target_theta - self.current_theta) > 0.05:
             twist = Twist()
             twist.angular.z = 0.5 * (target_theta - self.current_theta)
