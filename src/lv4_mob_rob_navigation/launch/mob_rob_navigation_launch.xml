@@ -3,7 +3,7 @@
     <let name="urdf_path"
         value="$(find-pkg-share mob_rob_description)/urdf/lv4_mob_rob.urdf" />
     <let name="gazebo_config_path"
-        value="$(find-pkg-share mob_rob_bringup)/config/gz_bridge.yaml" />
+        value="$(find-pkg-share lv4_mob_rob_navigation)/config/gz_bridge.yaml" />
 
     <!-- Robot state publisher -->
     <node pkg="robot_state_publisher" exec="robot_state_publisher">
