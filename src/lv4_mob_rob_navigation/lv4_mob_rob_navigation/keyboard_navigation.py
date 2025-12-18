@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from lv4_mob_rob_navigation.action import NavigateToPose
+from lv4_mob_rob_navigation import NavigateToPose
 from rclpy.action import ActionClient
 import tkinter as tk
 from tkinter import messagebox
