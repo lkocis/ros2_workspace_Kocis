@@ -27,9 +27,6 @@
     <!-- Navigator akcijski server -->
     <node pkg="lv4_mob_rob_navigation" exec="navigator" name="navigator" output="screen"/>
 
-    <!-- Radi bez ovoga -->
-    <node pkg="lv4_mob_rob_navigation" exec="keyboard_navigation" name="keyboard_navigation" output="screen"/>
-
     <!-- RViz -->
     <node pkg="rviz2" exec="rviz2" args="" />
 </launch>
