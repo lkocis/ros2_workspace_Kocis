@@ -8,8 +8,9 @@ from std_msgs.msg import Bool
 from nav_msgs.msg import Odometry
 import math
 import tf_transformations
-
+from rclpy.executors import MultiThreadedExecutor
 from lv4_mob_rob_interfaces.action import Navigate
+import time
 
 
 class Navigator(Node):
@@ -35,7 +36,7 @@ class Navigator(Node):
         self.current_theta = 0.0
         self.create_subscription(
             Odometry,
-            '/odom',
+            '/odom_fake',
             self.odom_callback,
             10
         )
@@ -118,23 +119,23 @@ class Navigator(Node):
         # -------------------------------------------------
         # 2) PRAVOCRTNO KRETANJE
         # -------------------------------------------------
+        self.get_logger().info('Starting linear movement...')
         while rclpy.ok():
+            # Provjera kolizije (Samo u ovom koraku!)
+            if self.collision_detected:
+                self.stop_robot()
+                self.get_logger().error('COLLISION! Aborting action and returning False.')
+                goal_handle.abort()
+                result = Navigate.Result()
+                result.success = False
+                return result
+
             if goal_handle.is_cancel_requested:
                 self.stop_robot()
                 goal_handle.canceled()
                 return Navigate.Result(success=False)
 
-            if self.collision_detected:
-                self.stop_robot()
-                goal_handle.abort()
-                self.get_logger().warn('Collision detected – navigation aborted')
-                return Navigate.Result(success=False)
-
-            distance = math.hypot(
-                target_x - self.current_x,
-                target_y - self.current_y
-            )
-
+            distance = math.hypot(target_x - self.current_x, target_y - self.current_y)
             feedback.distance_to_goal = distance
             goal_handle.publish_feedback(feedback)
 
@@ -142,12 +143,11 @@ class Navigator(Node):
                 break
 
             twist = Twist()
-            twist.linear.x = 0.25
+            twist.linear.x = 0.20 # Malo smanjite brzinu radi lakšeg testiranja
             self.cmd_pub.publish(twist)
-
-            rclpy.spin_once(self, timeout_sec=0.1)
-
-        self.stop_robot()
+            
+            # Kratka pauza da se ne zaguši procesor
+            time.sleep(0.05)
 
         # -------------------------------------------------
         # 3) ZAVRŠNA ROTACIJA
@@ -182,9 +182,18 @@ class Navigator(Node):
 def main(args=None):
     rclpy.init(args=args)
     node = Navigator()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
+    
+    # Omogućuje istovremeno izvršavanje akcije i čitanje senzora
+    executor = MultiThreadedExecutor()
+    executor.add_node(node)
+    
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
 
 
 if __name__ == '__main__':

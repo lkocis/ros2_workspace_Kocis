@@ -12,6 +12,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/mob_rob_navigation_launch.xml']),
         ('share/' + package_name + '/config', ['config/gz_bridge.yaml']),
+        ('share/' + package_name + '/world', ['world/depot.sdf']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
