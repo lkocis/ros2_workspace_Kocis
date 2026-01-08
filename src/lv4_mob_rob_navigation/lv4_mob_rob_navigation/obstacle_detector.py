@@ -24,16 +24,18 @@ class ObstacleDetector(Node):
         self.get_logger().info(f'Obstacle detector started with stop_distance={self.stop_distance} m')
 
     def lidar_callback(self, msg: LaserScan):
-        front_angles = range(-15, 16)
         obstacle_detected = False
 
-        for angle in front_angles:
-            index = int((angle - msg.angle_min) / msg.angle_increment)
-            if 0 <= index < len(msg.ranges):
-                distance = msg.ranges[index]
-                if distance < self.stop_distance:
-                    obstacle_detected = True
-                    break
+        center_index = len(msg.ranges) // 2
+        window_size = 10  
+
+        for i in range(center_index - window_size, center_index + window_size):
+            if 0 <= i < len(msg.ranges):
+                distance = msg.ranges[i]
+                if distance > msg.range_min and distance < msg.range_max:
+                    if distance < self.stop_distance:
+                        obstacle_detected = True
+                        break
 
         collision_msg = Bool()
         collision_msg.data = obstacle_detected

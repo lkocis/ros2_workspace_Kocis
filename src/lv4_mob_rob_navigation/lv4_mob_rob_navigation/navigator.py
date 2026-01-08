@@ -5,103 +5,179 @@ from rclpy.node import Node
 from rclpy.action import ActionServer
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Bool
-import math
-from lv4_mob_rob_navigation import NavigateToPose
 from nav_msgs.msg import Odometry
+import math
 import tf_transformations
 
+from lv4_mob_rob_interfaces.action import Navigate
+
+
 class Navigator(Node):
+
     def __init__(self):
         super().__init__('navigator')
 
+        # Publisher za brzinu robota
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
+        # Collision flag
         self.collision_detected = False
-        self.create_subscription(Bool, '/collision', self.collision_callback, 10)
+        self.create_subscription(
+            Bool,
+            '/collision',
+            self.collision_callback,
+            10
+        )
 
+        # Odometrija robota
         self.current_x = 0.0
         self.current_y = 0.0
         self.current_theta = 0.0
         self.create_subscription(
             Odometry,
-            '/odom_fake',
+            '/odom',
             self.odom_callback,
             10
         )
 
+        # Action server
         self._action_server = ActionServer(
             self,
-            NavigateToPose,
-            '/navigate_to_pose',
+            Navigate,
+            '/navigate',
             self.execute_callback
         )
+
+        self.get_logger().info('Navigator action server started')
+
+    # -----------------------------------------------------
 
     def collision_callback(self, msg: Bool):
         self.collision_detected = msg.data
 
-    def odom_callback(self, msg):
+    def odom_callback(self, msg: Odometry):
         self.current_x = msg.pose.pose.position.x
         self.current_y = msg.pose.pose.position.y
 
-        orientation_q = msg.pose.pose.orientation
-        _, _, yaw = tf_transformations.euler_from_quaternion([
-            orientation_q.x,
-            orientation_q.y,
-            orientation_q.z,
-            orientation_q.w
-        ])
+        q = msg.pose.pose.orientation
+        _, _, yaw = tf_transformations.euler_from_quaternion(
+            [q.x, q.y, q.z, q.w]
+        )
         self.current_theta = yaw
+
+    # -----------------------------------------------------
+
+    def normalize_angle(self, angle):
+        return math.atan2(math.sin(angle), math.cos(angle))
+
+    def stop_robot(self):
+        self.cmd_pub.publish(Twist())
+
+    # -----------------------------------------------------
 
     def execute_callback(self, goal_handle):
         goal = goal_handle.request
-        target_x = self.current_x + goal.x  
+
+        # Relativni cilj → apsolutni
+        target_x = self.current_x + goal.x
         target_y = self.current_y + goal.y
-        target_theta = goal.theta  
+        target_theta = self.current_theta + math.radians(goal.theta)
 
-        self.get_logger().info(f'Navigating to ({target_x:.2f}, {target_y:.2f}, {target_theta:.2f})')
+        self.get_logger().info(
+            f'New goal: x={goal.x:.2f}, y={goal.y:.2f}, theta={goal.theta:.1f}°'
+        )
 
-        # Rotacija prema cilju
-        angle_to_goal = math.atan2(target_y - self.current_y, target_x - self.current_x)
-        while abs(angle_to_goal - self.current_theta) > 0.05:
+        feedback = Navigate.Feedback()
+
+        # -------------------------------------------------
+        # 1) ROTACIJA PREMA CILJU
+        # -------------------------------------------------
+        while rclpy.ok():
+            if goal_handle.is_cancel_requested:
+                self.stop_robot()
+                goal_handle.canceled()
+                return Navigate.Result(success=False)
+
+            angle_to_goal = math.atan2(
+                target_y - self.current_y,
+                target_x - self.current_x
+            )
+            error = self.normalize_angle(angle_to_goal - self.current_theta)
+
+            if abs(error) < 0.05:
+                break
+
             twist = Twist()
-            twist.angular.z = 0.5 * (angle_to_goal - self.current_theta)
+            twist.angular.z = 0.6 * error
             self.cmd_pub.publish(twist)
+
             rclpy.spin_once(self, timeout_sec=0.1)
+
         self.stop_robot()
 
-        #Pravocrtno kretanje 
-        distance = math.hypot(target_x - self.current_x, target_y - self.current_y)
-        while distance > 0.05:
+        # -------------------------------------------------
+        # 2) PRAVOCRTNO KRETANJE
+        # -------------------------------------------------
+        while rclpy.ok():
+            if goal_handle.is_cancel_requested:
+                self.stop_robot()
+                goal_handle.canceled()
+                return Navigate.Result(success=False)
+
             if self.collision_detected:
                 self.stop_robot()
                 goal_handle.abort()
-                self.get_logger().warn('Collision detected! Navigation aborted.')
-                return NavigateToPose.Result(success=False)
+                self.get_logger().warn('Collision detected – navigation aborted')
+                return Navigate.Result(success=False)
+
+            distance = math.hypot(
+                target_x - self.current_x,
+                target_y - self.current_y
+            )
+
+            feedback.distance_to_goal = distance
+            goal_handle.publish_feedback(feedback)
+
+            if distance < 0.05:
+                break
 
             twist = Twist()
-            twist.linear.x = 0.2  # brzina naprijed
+            twist.linear.x = 0.25
             self.cmd_pub.publish(twist)
 
             rclpy.spin_once(self, timeout_sec=0.1)
-            distance = math.hypot(target_x - self.current_x, target_y - self.current_y)
 
         self.stop_robot()
 
-        # Rotacija na ciljanu orijentaciju
-        while abs(target_theta - self.current_theta) > 0.05:
+        # -------------------------------------------------
+        # 3) ZAVRŠNA ROTACIJA
+        # -------------------------------------------------
+        while rclpy.ok():
+            if goal_handle.is_cancel_requested:
+                self.stop_robot()
+                goal_handle.canceled()
+                return Navigate.Result(success=False)
+
+            error = self.normalize_angle(
+                target_theta - self.current_theta
+            )
+
+            if abs(error) < 0.05:
+                break
+
             twist = Twist()
-            twist.angular.z = 0.5 * (target_theta - self.current_theta)
+            twist.angular.z = 0.6 * error
             self.cmd_pub.publish(twist)
+
             rclpy.spin_once(self, timeout_sec=0.1)
 
         self.stop_robot()
+
+        # -------------------------------------------------
         goal_handle.succeed()
-        self.get_logger().info('Navigation complete')
-        return NavigateToPose.Result(success=True)
+        self.get_logger().info('Navigation completed successfully')
+        return Navigate.Result(success=True)
 
-    def stop_robot(self):
-        twist = Twist()
-        self.cmd_pub.publish(twist)
 
 def main(args=None):
     rclpy.init(args=args)
@@ -109,6 +185,7 @@ def main(args=None):
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
+
 
 if __name__ == '__main__':
     main()
