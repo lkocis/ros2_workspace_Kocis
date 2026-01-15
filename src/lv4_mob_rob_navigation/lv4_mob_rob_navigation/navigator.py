@@ -18,10 +18,8 @@ class Navigator(Node):
     def __init__(self):
         super().__init__('navigator')
 
-        # Publisher za brzinu robota
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
 
-        # Collision flag
         self.collision_detected = False
         self.create_subscription(
             Bool,
@@ -30,7 +28,6 @@ class Navigator(Node):
             10
         )
 
-        # Odometrija robota
         self.current_x = 0.0
         self.current_y = 0.0
         self.current_theta = 0.0
@@ -41,7 +38,6 @@ class Navigator(Node):
             10
         )
 
-        # Action server
         self._action_server = ActionServer(
             self,
             Navigate,
@@ -50,8 +46,6 @@ class Navigator(Node):
         )
 
         self.get_logger().info('Navigator action server started')
-
-    # -----------------------------------------------------
 
     def collision_callback(self, msg: Bool):
         self.collision_detected = msg.data
@@ -66,15 +60,11 @@ class Navigator(Node):
         )
         self.current_theta = yaw
 
-    # -----------------------------------------------------
-
     def normalize_angle(self, angle):
         return math.atan2(math.sin(angle), math.cos(angle))
 
     def stop_robot(self):
         self.cmd_pub.publish(Twist())
-
-    # -----------------------------------------------------
 
     def execute_callback(self, goal_handle):
         goal = goal_handle.request
@@ -121,7 +111,6 @@ class Navigator(Node):
         # -------------------------------------------------
         self.get_logger().info('Starting linear movement...')
         while rclpy.ok():
-            # Provjera kolizije (Samo u ovom koraku!)
             if self.collision_detected:
                 self.stop_robot()
                 self.get_logger().error('COLLISION! Aborting action and returning False.')
@@ -143,10 +132,9 @@ class Navigator(Node):
                 break
 
             twist = Twist()
-            twist.linear.x = 0.20 # Malo smanjite brzinu radi lakšeg testiranja
+            twist.linear.x = 0.20 
             self.cmd_pub.publish(twist)
             
-            # Kratka pauza da se ne zaguši procesor
             time.sleep(0.05)
 
         # -------------------------------------------------
@@ -173,7 +161,6 @@ class Navigator(Node):
 
         self.stop_robot()
 
-        # -------------------------------------------------
         goal_handle.succeed()
         self.get_logger().info('Navigation completed successfully')
         return Navigate.Result(success=True)
@@ -183,7 +170,6 @@ def main(args=None):
     rclpy.init(args=args)
     node = Navigator()
     
-    # Omogućuje istovremeno izvršavanje akcije i čitanje senzora
     executor = MultiThreadedExecutor()
     executor.add_node(node)
     
