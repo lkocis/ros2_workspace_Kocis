@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'lv4_mob_rob_navigation'
+package_name = 'mob_rob_navigation'
 
 setup(
     name=package_name,
@@ -10,9 +10,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', ['launch/mob_rob_navigation_launch.xml']),
-        ('share/' + package_name + '/config', ['config/gz_bridge.yaml']),
-        ('share/' + package_name + '/world', ['world/depot.sdf']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -27,9 +24,9 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            "navigator = lv4_mob_rob_navigation.navigator:main",
-            "obstacle_detector = lv4_mob_rob_navigation.obstacle_detector:main",
-            "keyboard_navigation = lv4_mob_rob_navigation.keyboard_navigation:main",
+            'collision_avoidance = mob_rob_navigation.collision_avoidance:main',
+            'nav_server = mob_rob_navigation.nav_action_server:main',
+            'nav_client = mob_rob_navigation.nav_action_client:main',
         ],
     },
 )

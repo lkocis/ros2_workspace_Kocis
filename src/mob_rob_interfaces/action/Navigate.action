@@ -1,0 +1,10 @@
+# Goal: Koordinate na koje robot treba stići
+float64 x
+float64 y
+float64 theta
+---
+# Result: Je li robot uspješno stigao do cilja
+bool success
+---
+# Feedback: Trenutna udaljenost do cilja tijekom kretanja
+float64 distance_to_goal
