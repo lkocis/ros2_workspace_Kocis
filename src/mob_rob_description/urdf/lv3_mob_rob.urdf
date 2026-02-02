@@ -110,9 +110,11 @@
       <wheel_separation>0.35</wheel_separation>
       <wheel_radius>0.1</wheel_radius>
       <topic>cmd_vel</topic>
-      <odom_topic>odom_fake</odom_topic>
-      <frame_id>odom_fake</frame_id>
+      <odom_topic>odom</odom_topic>
+      <tf_topic>tf</tf_topic> 
+      <frame_id>odom</frame_id>
       <child_frame_id>base_link</child_frame_id>
+      <publish_odom_tf>true</publish_odom_tf>
     </plugin>
   </gazebo>
 

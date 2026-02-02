@@ -19,7 +19,7 @@ class NavigationActionServer(Node):
         
         self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
         
-        self.subscription = self.create_subscription(Odometry, 'odom_fake', self.odom_callback, 10, callback_group=self.callback_group)
+        self.subscription = self.create_subscription(Odometry, 'odom', self.odom_callback, 10, callback_group=self.callback_group)
 
         self.collision_detected = False
         self.collision_sub = self.create_subscription(Bool, '/collision', self.collision_callback, 10, callback_group=self.callback_group)
