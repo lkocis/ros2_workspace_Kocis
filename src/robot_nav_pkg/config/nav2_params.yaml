@@ -318,12 +318,24 @@ velocity_smoother:
     velocity_timeout: 1.0
     use_sim_time: true
 
+waypoint_follower:
+  ros__parameters:
+    use_sim_time: true
+    loop_rate: 20
+    stop_on_failure: false
+    action_server_result_timeout: 900.0
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: True
+      waypoint_pause_duration: 200
+
 lifecycle_manager:
   ros__parameters:
     use_sim_time: true
     autostart: true
     #node_names je promijenjen, ovako je bio na početku (od profesora): node_names: ['map_server', 'amcl', 'controller_server', 'smoother_server', 'planner_server', 'behavior_server', 'bt_navigator', 'velocity_smoother']
-    node_names: ['map_server', 'amcl', 'planner_server', 'controller_server', 'behavior_server', 'bt_navigator']
+    node_names: ['map_server', 'amcl', 'planner_server', 'controller_server', 'behavior_server', 'bt_navigator', 'waypoint_follower']
     bond_timeout: 4.0
     attempt_respawn_reconnection: true
     bond_respawn_max_duration: 10.0

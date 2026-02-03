@@ -120,9 +120,9 @@
 
   <gazebo reference="lidar_link">
     <sensor type="gpu_lidar" name="lidar">
-        <pose>0 0 0 0 0 0</pose>
-        <update_rate>10</update_rate>
-        <lidar>
+      <pose>0 0 0 0 0 0</pose>
+      <update_rate>10</update_rate>
+      <lidar>
         <scan>
             <horizontal>
             <samples>360</samples>
@@ -135,11 +135,37 @@
             <min>0.15</min> 
             <max>10.0</max>
         </range>
-        </lidar>
-        <visualize>true</visualize>
-        <topic>scan</topic>
-        <gz_frame_id>lidar_link</gz_frame_id> </sensor>
-    </gazebo>
+      </lidar>
+      <visualize>true</visualize>
+      <topic>scan</topic>
+      <gz_frame_id>lidar_link</gz_frame_id> 
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="kinect_link">
+    <sensor type="camera" name="kinect_camera">
+      <update_rate>10.0</update_rate>
+      <visualize>true</visualize>
+      <topic>camera/image</topic>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+    </sensor>
+  </gazebo>
 
   <gazebo reference="base_link"><material>Gazebo/Red</material></gazebo>
 

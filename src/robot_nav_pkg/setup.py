@@ -30,6 +30,8 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'goal_manager = robot_nav_pkg.goal_manager:main',
+            'current_point_manager = robot_nav_pkg.current_point_manager:main',
         ],
     },
 )

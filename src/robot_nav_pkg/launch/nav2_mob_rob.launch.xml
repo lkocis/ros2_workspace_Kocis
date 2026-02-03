@@ -42,6 +42,11 @@
         <param name="use_sim_time" value="True" />
     </node>
 
+    <node pkg="nav2_waypoint_follower" exec="waypoint_follower" name="waypoint_follower" respawn="True" respawn_delay="2.0">
+        <param from="$(var nav2_config_path)" />
+        <param name="use_sim_time" value="True" />
+    </node>
+
     <node pkg="nav2_lifecycle_manager" exec="lifecycle_manager" name="lifecycle_manager" respawn="True" respawn_delay="2.0">
         <param from="$(var nav2_config_path)" />
         <param name="use_sim_time" value="True" />
@@ -62,6 +67,14 @@
     </node>
 
     <node pkg="rviz2" exec="rviz2" args="-d $(var rviz_config_path)">
+        <param name="use_sim_time" value="True" />
+    </node>
+
+    <node pkg="robot_nav_pkg" exec="goal_manager" name="goal_manager" output="screen">
+        <param name="use_sim_time" value="True" />
+    </node>
+
+    <node pkg="robot_nav_pkg" exec="current_point_manager" name="current_point_manager" output="screen">
         <param name="use_sim_time" value="True" />
     </node>
 </launch>
