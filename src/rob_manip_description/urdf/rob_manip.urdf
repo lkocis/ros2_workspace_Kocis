@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<robot name="rob_manip">
+
+<link name="base_link">
+    <visual>
+        <geometry>
+            <cylinder length="0.05" radius="0.1"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.75 0.75 0.75 1"/>
+        </material>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.05" radius="0.1"/>
+        </geometry>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </collision>
+    <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.0027" iyy="0.0027" izz="0.005" ixy="0" ixz="0" iyz="0"/>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </inertial>
+</link>
+
+<!-- Empty link-->
+<link name="world"/>
+<joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+</joint>
+
+<link name="torso">
+    <visual>
+        <geometry>
+            <cylinder length="0.1" radius="0.05"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.75 0.75 0.75 1"/>
+        </material>
+        <origin rpy="0.0 0 0" xyz="0 0 0.05"/>
+    </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.1" radius="0.05"/>
+        </geometry>
+        <origin rpy="0.0 0 0" xyz="0 0 0.05"/>
+    </collision>
+    <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.00145" iyy="0.00145" izz="0.00125" ixy="0" ixz="0" iyz="0"/>
+        <origin rpy="0.0 0 0" xyz="0 0 0.05"/>
+    </inertial>
+</link>
+
+<joint name="hip" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="torso"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.05"/>
+</joint>
+
+<link name="upper_arm">
+    <visual>
+        <geometry>
+            <cylinder length="0.4" radius="0.05"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.75 0.75 0.75 1"/>
+        </material>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.4" radius="0.05"/>
+        </geometry>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </collision>
+    <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.01396" iyy="0.01396" izz="0.00125" ixy="0" ixz="0" iyz="0"/>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </inertial>
+</link>
+
+<joint name="shoulder" type="continuous">
+    <axis xyz="0 1 0"/>
+    <parent link="torso"/>
+    <child link="upper_arm"/>
+    <origin rpy="0 0 0" xyz="0 0.1 0.05"/>
+</joint>
+
+<link name="lower_arm">
+    <visual>
+        <geometry>
+            <cylinder length="0.4" radius="0.05"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.75 0.75 0.75 1"/>
+        </material>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.4" radius="0.05"/>
+        </geometry>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </collision>
+    <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.01396" iyy="0.01396" izz="0.00125" ixy="0" ixz="0" iyz="0"/>
+        <origin rpy="0.0 0 0" xyz="0 0 0.2"/>
+    </inertial>
+</link>
+
+<link name="hand">
+    <visual>
+        <geometry>
+            <box size="0.05 0.05 0.05"/>
+        </geometry>
+        <material name="silver">
+            <color rgba="0.75 0.75 0.75 1"/>
+        </material>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </visual>
+    <collision>
+        <geometry>
+            <box size="0.05 0.05 0.05"/>
+        </geometry>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </collision>
+    <inertial>
+        <mass value="1.0"/>
+        <inertia ixx="0.00042" iyy="0.00042" izz="0.00042" ixy="0" ixz="0" iyz="0"/>
+        <origin rpy="0.0 0 0" xyz="0 0 0.025"/>
+    </inertial>
+</link>
+
+<link name="forearm_roll_link">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <cylinder length="0.01" radius="0.01"/> </geometry>
+        <material name="silver"/>
+    </visual>
+    <inertial>
+        <mass value="0.05"/>
+        <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+</link>
+
+<link name="wrist_roll_link">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+            <cylinder length="0.01" radius="0.01"/>
+        </geometry>
+        <material name="silver"/>
+    </visual>
+    <inertial>
+        <mass value="0.05"/>
+        <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+</link>
+
+<joint name="elbow" type="continuous">
+    <axis xyz="0 1 0"/>
+    <parent link="upper_arm"/>
+    <child link="forearm_roll_link"/>
+    <origin rpy="0 0 0" xyz="0.0 -0.1 0.35"/>
+</joint>
+
+<joint name="forearm_roll" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="forearm_roll_link"/>
+    <child link="lower_arm"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+</joint>
+
+<joint name="wrist" type="continuous">
+    <axis xyz="0 1 0"/>
+    <parent link="lower_arm"/>
+    <child link="wrist_roll_link"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 0.4"/>
+</joint>
+
+<joint name="hand_roll" type="continuous">
+    <axis xyz="0 0 1"/>
+    <parent link="wrist_roll_link"/>
+    <child link="hand"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+</joint>
+
+<gazebo reference="base_link">
+    <material>Gazebo/Chrome</material>
+</gazebo>
+<gazebo reference="torso">
+    <material>Gazebo/Chrome</material>
+</gazebo>
+<gazebo reference="upper_arm">
+    <material>Gazebo/Chrome</material>
+</gazebo>
+<gazebo reference="lower_arm">
+    <material>Gazebo/Chrome</material>
+</gazebo>
+<gazebo reference="hand">
+    <material>Gazebo/Chrome</material>
+</gazebo>
+
+<gazebo>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        <parameters>/home/lana/ros2_workspace_Kocis/src/rob_manip_bringup/config/robot_controllers.yaml</parameters>
+    </plugin>
+</gazebo>
+
+<!-- ros_control plugin -->
+<gazebo>
+ <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+ <parameters>/home/nrs_lv_ws/src/rob_manip_moveit_config/config/ros2_controllers.yaml</parameters>
+</plugin>
+</gazebo>
+
+<ros2_control name="GazeboSimSystem" type="system">
+    <hardware>
+        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+    </hardware>
+    
+    <joint name="hip">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+
+    <joint name="shoulder">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+
+    <joint name="elbow">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+
+    <joint name="forearm_roll">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+
+    <joint name="wrist">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+
+    <joint name="hand_roll">
+        <command_interface name="position"/><state_interface name="position"/>
+    </joint>
+</ros2_control>
+</robot>

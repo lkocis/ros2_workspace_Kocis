@@ -1,0 +1,24 @@
+<launch>
+    <let name="urdf_path" value="$(find-pkg-share rob_manip_description)/urdf/rob_manip.urdf" />
+    <let name="robot_controllers_path" value="$(find-pkg-share rob_manip_description)/config/robot_controllers.yaml" />
+    <let name="gazebo_config_path" value="$(find-pkg-share rob_manip_description)/config/gz_bridge.yaml" />
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(command 'cat $(var urdf_path)')" />
+    </node>
+
+    <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+        <arg name="gz_args" value="empty.sdf -r" />
+    </include>
+
+    <node pkg="ros_gz_sim" exec="create" args="-topic robot_description -name rob_manip" />
+
+    <node pkg="controller_manager" exec="spawner" args="joint_state_broadcaster" />
+    <node pkg="controller_manager" exec="spawner" args="arm_controller" />
+
+    <node pkg="ros_gz_bridge" exec="parameter_bridge">
+        <param name="config_file" value="$(var gazebo_config_path)" />
+    </node>
+
+    <node pkg="rviz2" exec="rviz2" />
+</launch>
