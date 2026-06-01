@@ -37,7 +37,9 @@ setup(
                             "draw_lana = py_pkg.draw_lana:main",
                             "znamenitosti_pub_sub = py_pkg.znamenitosti_pub_sub:main",
                             "tf_listen = py_pkg.tf_listen:main",
-                            "tf_pub = py_pkg.tf_pub:main"
+                            "tf_pub = py_pkg.tf_pub:main",
+                            "path_visualizer = py_pkg.path_visualizer:main",
+                            "draw_lana_lv5 = py_pkg.draw_lana_lv5:main"
         ],
     },
 )

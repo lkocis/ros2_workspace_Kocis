@@ -24,7 +24,6 @@
     </inertial>
 </link>
 
-<!-- Empty link-->
 <link name="world"/>
 <joint name="fixed" type="fixed">
     <parent link="world"/>
@@ -141,9 +140,15 @@
     <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-            <cylinder length="0.01" radius="0.01"/> </geometry>
+            <cylinder length="0.01" radius="0.01"/>
+        </geometry>
         <material name="silver"/>
     </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.01" radius="0.01"/>
+        </geometry>
+    </collision>
     <inertial>
         <mass value="0.05"/>
         <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
@@ -158,6 +163,11 @@
         </geometry>
         <material name="silver"/>
     </visual>
+    <collision>
+        <geometry>
+            <cylinder length="0.01" radius="0.01"/>
+        </geometry>
+    </collision>
     <inertial>
         <mass value="0.05"/>
         <inertia ixx="0.0001" iyy="0.0001" izz="0.0001" ixy="0" ixz="0" iyz="0"/>
@@ -192,62 +202,16 @@
     <origin rpy="0 0 0" xyz="0 0 0"/>
 </joint>
 
-<gazebo reference="base_link">
-    <material>Gazebo/Chrome</material>
-</gazebo>
-<gazebo reference="torso">
-    <material>Gazebo/Chrome</material>
-</gazebo>
-<gazebo reference="upper_arm">
-    <material>Gazebo/Chrome</material>
-</gazebo>
-<gazebo reference="lower_arm">
-    <material>Gazebo/Chrome</material>
-</gazebo>
-<gazebo reference="hand">
-    <material>Gazebo/Chrome</material>
-</gazebo>
+<gazebo reference="base_link"><material>Gazebo/Chrome</material></gazebo>
+<gazebo reference="torso"><material>Gazebo/Chrome</material></gazebo>
+<gazebo reference="upper_arm"><material>Gazebo/Chrome</material></gazebo>
+<gazebo reference="lower_arm"><material>Gazebo/Chrome</material></gazebo>
+<gazebo reference="hand"><material>Gazebo/Chrome</material></gazebo>
 
 <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters>/home/lana/ros2_workspace_Kocis/src/rob_manip_bringup/config/robot_controllers.yaml</parameters>
+        <parameters>/home/student/ros2_workspace_Kocis/src/rob_manip_moveit/config/ros2_controllers.yaml</parameters>
     </plugin>
 </gazebo>
 
-<!-- ros_control plugin -->
-<gazebo>
- <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
- <parameters>/home/nrs_lv_ws/src/rob_manip_moveit_config/config/ros2_controllers.yaml</parameters>
-</plugin>
-</gazebo>
-
-<ros2_control name="GazeboSimSystem" type="system">
-    <hardware>
-        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-    </hardware>
-    
-    <joint name="hip">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-
-    <joint name="shoulder">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-
-    <joint name="elbow">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-
-    <joint name="forearm_roll">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-
-    <joint name="wrist">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-
-    <joint name="hand_roll">
-        <command_interface name="position"/><state_interface name="position"/>
-    </joint>
-</ros2_control>
 </robot>
